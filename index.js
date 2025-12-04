@@ -23,7 +23,9 @@ app.get("/", (req, res) => {
 // Create a booking
 app.post("/book", async (req, res) => {
   try {
-    const booking = await Booking.create(req.body);
+    const bookingData = req.body;
+    // status & notes handled by schema defaults if not provided
+    const booking = await Booking.create(bookingData);
     res.json({ success: true, booking });
   } catch (err) {
     console.error(err);
@@ -39,6 +41,28 @@ app.get("/bookings", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Error fetching bookings" });
+  }
+});
+
+// Update a booking (edit)
+app.put("/bookings/:id", async (req, res) => {
+  try {
+    const updated = await Booking.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    if (!updated) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Booking not found" });
+    }
+    res.json({ success: true, booking: updated });
+  } catch (err) {
+    console.error("Error updating booking:", err);
+    res
+      .status(500)
+      .json({ success: false, message: "Error updating booking" });
   }
 });
 
