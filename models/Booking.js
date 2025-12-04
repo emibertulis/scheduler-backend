@@ -6,6 +6,8 @@ const bookingSchema = new mongoose.Schema({
   service: { type: String, required: true },
   date: { type: String, required: true },
   time: { type: String, required: true },
+  notes: { type: String, default: "" },
+  status: { type: String, enum: ["Pending", "Confirmed"], default: "Pending" },
   createdAt: { type: Date, default: Date.now }
 });
 
